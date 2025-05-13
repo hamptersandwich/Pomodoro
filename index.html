@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Y2K Productivity</title>
+  <!-- PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Y2K Productivity">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/180x180.png?text=Y2K">
+  <!-- CDN Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.22.9/babel.min.js"></script>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', 'Arial', sans-serif;
+      background: linear-gradient(135deg, #3333ff 0%, #ff33cc 100%);
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    #root {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .y2k-border {
+      border: 2px solid #cccccc;
+      border-radius: 10px;
+      box-shadow: inset 0 0 5px #ffffff, 0 0 10px #00ffff;
+      background: linear-gradient(45deg, #6666ff 0%, #cc33ff 100%);
+    }
+
+    .container {
+      max-width: 448px;
+      margin: 20px auto;
+      padding: 20px;
+      background: linear-gradient(#9999ff, #3333cc);
+      border: 3px solid #00ffff;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #ff00ff, inset 0 0 5px #ffffff;
+    }
+
+    h1 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ff00ff;
+      text-shadow: 2px 2px 4px #00ffff;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: #00ffff;
+      text-shadow: 1px 1px 3px #ff00ff;
+    }
+
+    .tab-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+
+    .tab-button {
+      padding: 10px 15px;
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      background: linear-gradient(#6666ff, #3333cc);
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 0 5px #ff00ff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .tab-button.active {
+      background: linear-gradient(#ff33cc, #cc33ff);
+      color: #00ffff;
+      box-shadow: 0 0 10px #00ffff;
+      transform: scale(1.05);
+    }
+
+    .tab-button:hover {
+ judec: scale(1.05);
+      box-shadow: 0 0 10px #00ffff;
+    }
+
+    .todo-input {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .todo-input input {
+      flex-grow: 1;
+      padding: 10px;
+      background: #3333cc;
+      color: #ffffff;
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      box-shadow: inset 0 0 5px #ff00ff;
+      font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    }
+
+    .todo-input input::placeholder {
+      color: #cccccc;
+    }
+
+    .todo-input button {
+      padding: 10px;
+      margin-left: 10px;
+      background: linear-gradient(#ff33cc, #cc33ff);
+      color: #ffffff;
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #00ffff;
+      font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    }
+
+    .todo-input button:hover {
+      background: linear-gradient(#cc33ff, #ff33cc);
+      box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .todo-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 5px;
+      background: #3333cc;
+      border-radius: 5px;
+    }
+
+    .todo-list input[type="checkbox"] {
+      margin-right: 10px;
+      accent-color: #ff00ff;
+    }
+
+    .todo-list span {
+      flex-grow: 1;
+      color: #ffffff;
+    }
+
+    .todo-list .completed {
+      text-decoration: line-through;
+      color: #cccccc;
+    }
+
+    .todo-list button {
+      padding: 5px 10px;
+      background: linear-gradient(#ff3333, #cc3333);
+      color: #ffffff;
+      border: 2px solid #00ffff;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #ff00ff;
+      font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    }
+
+    .todo-list button:hover {
+      background: linear-gradient(#cc3333, #ff3333);
+      box-shadow: 0 0 10px #00ffff;
+    }
+
+    .notes-textarea {
+      width: 100%;
+      height: 256px;
+      padding: 10px;
+      background: #3333cc;
+      color: #ffffff;
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      box-shadow: inset 0 0 5px #ff00ff;
+      font-family: 'Comic Sans MS', 'Arial', sans-serif;
+      resize: none;
+    }
+
+    .notes-textarea::placeholder {
+      color: #cccccc;
+    }
+
+    .pomodoro-timer {
+      font-size: 40px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00ffff;
+      text-shadow: 2px 2px 4px #ff00ff;
+    }
+
+    .pomodoro-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .pomodoro-button {
+      padding: 10px 15px;
+      background: linear-gradient(#ff33cc, #cc33ff);
+      color: #ffffff;
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #00ffff;
+      font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    }
+
+    .pomodoro-button:hover {
+      background: linear-gradient(#cc33ff, #ff33cc);
+      box-shadow: 0 0 10px #ff00ff;
+    }
+
+    .pomodoro-button.reset {
+      background: linear-gradient(#ff3333, #cc3333);
+    }
+
+    .pomodoro-button.reset:hover {
+      background: linear-gradient(#cc3333, #ff3333);
+      box-shadow: 0 0 10px #00ffff;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Todo List Component
+    function TodoList() {
+      const [todos, setTodos] = useState(() => JSON.parse(localStorage.getItem('todos')) || []);
+      const [newTodo, setNewTodo] = useState('');
+
+      useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos));
+      }, [todos]);
+
+      const addTodo = () => {
+        if (newTodo.trim()) {
+          setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
+          setNewTodo('');
+        }
+      };
+
+      const toggleTodo = (id) => {
+        setTodos(todos.map(todo =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        ));
+      };
+
+      const deleteTodo = (id) => {
+        setTodos(todos.filter(todo => todo.id !== id));
+      };
+
+      return (
+        <div>
+          <h2>Todo List</h2>
+          <div className="todo-input">
+            <input
+              type="text"
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+              placeholder="Add a task..."
+            />
+            <button onClick={addTodo}>Add</button>
+          </div>
+          <ul className="todo-list">
+            {todos.map(todo => (
+              <li key={todo.id}>
+                <input
+                  type="checkbox"
+                  checked={todo.completed}
+                  onChange={() => toggleTodo(todo.id)}
+                />
+                <span className={todo.completed ? 'completed' : ''}>{todo.text}</span>
+                <button onClick={() => deleteTodo(todo.id)}>X</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
+    // Notes Component
+    function Notes() {
+      const [notes, setNotes] = useState(() => JSON.parse(localStorage.getItem('notes')) || '');
+
+      useEffect(() => {
+        localStorage.setItem('notes', JSON.stringify(notes));
+      }, [notes]);
+
+      return (
+        <div>
+          <h2>Notes</h2>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="notes-textarea"
+            placeholder="Write your notes here..."
+          />
+        </div>
+      );
+    }
+
+    // Pomodoro Timer Component
+    function Pomodoro() {
+      const [time, setTime] = useState(25 * 60);
+      const [isRunning, setIsRunning] = useState(false);
+
+      useEffect(() => {
+        let timer;
+        if (isRunning && time > 0) {
+          timer = setInterval(() => setTime(t => t - 1), 1000);
+        }
+        return () => clearInterval(timer);
+      }, [isRunning, time]);
+
+      const startStop = () => setIsRunning(!isRunning);
+      const reset = () => {
+        setIsRunning(false);
+        setTime(25 * 60);
+      };
+
+      const formatTime = () => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      };
+
+      return (
+        <div>
+          <h2>Pomodoro Timer</h2>
+          <div className="pomodoro-timer">{formatTime()}</div>
+          <div className="pomodoro-buttons">
+            <button className="pomodoro-button" onClick={startStop}>
+              {isRunning ? 'Pause' : 'Start'}
+            </button>
+            <button className="pomodoro-button reset" onClick={reset}>
+              Reset
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // Main App Component
+    function App() {
+      const [activeTab, setActiveTab] = useState('todo');
+
+      return (
+        <div className="container y2k-border">
+          <h1>Y2K Productivity</h1>
+          <div className="tab-buttons">
+            <button
+              onClick={() => setActiveTab('todo')}
+              className={`tab-button ${activeTab === 'todo' ? 'active' : ''}`}
+            >
+              Todo
+            </button>
+            <button
+              onClick={() => setActiveTab('notes')}
+              className={`tab-button ${activeTab === 'notes' ? 'active' : ''}`}
+            >
+              Notes
+            </button>
+            <button
+              onClick={() => setActiveTab('pomodoro')}
+              className={`tab-button ${activeTab === 'pomodoro' ? 'active' : ''}`}
+            >
+              Pomodoro
+            </button>
+          </div>
+          {activeTab === 'todo' && <TodoList />}
+          {activeTab === 'notes' && <Notes />}
+          {activeTab === 'pomodoro' && <Pomodoro />}
+        </div>
+      );
+    }
+
+    // Render App
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+  <script>
+    // Embedded Manifest
+    const manifest = {
+      "name": "Y2K Productivity",
+      "short_name": "Y2K",
+      "start_url": "/index.html",
+      "display": "standalone",
+      "background_color": "#3333ff",
+      "theme_color": "#00ffff",
+      "icons": [
+        {
+          "src": "https://via.placeholder.com/192x192.png?text=Y2K",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "https://via.placeholder.com/512x512.png?text=Y2K",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
+
+    // Embedded Service Worker
+    const swScript = `
+      self.addEventListener('install', event => {
+        event.waitUntil(
+          caches.open('y2k-productivity-v1').then(cache => {
+            return cache.addAll([
+              '/index.html',
+              'https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js',
+              'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js',
+              'https://cdn.jsdelivr.net/npm/babel-standalone@7.22.9/babel.min.js'
+            ]);
+          })
+        );
+      });
+
+      self.addEventListener('fetch', event => {
+        event.respondWith(
+          caches.match(event.request).then(response => {
+            return response || fetch(event.request);
+          })
+        );
+      });
+    `;
+    const swBlob = new Blob([swScript], { type: 'application/javascript' });
+    const swURL = URL.createObjectURL(swBlob);
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register(swURL).catch(err => console.log('SW registration failed: ', err));
+      });
+    }
+  </script>
+</body>
+</html>
